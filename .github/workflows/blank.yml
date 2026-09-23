@@ -1,0 +1,31 @@
+name: Telegram Notification Alert
+
+# Controls when the action will run (Triggers on pushes to the main branch)
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  send-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checks-out your repository so the workflow can access it
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Sends the message to Telegram
+    - name: Send Telegram Notification
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        format: markdown
+        message: |
+          🚀 *GitHub Action Triggered!*
+          
+          *Repository:* ${{ github.repository }}
+          *Commit Message:* ${{ github.event.head_commit.message }}
+          *Author:* ${{ github.actor }}
+          
+          [View Changes](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
